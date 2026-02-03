@@ -8,11 +8,11 @@
     "npm": ">=10.2.4"
   },
   "scripts": {
-    "all": "npm run format && npm run lint && npm test",
+    "all": "npm run format && npm run lint && npm test && npm run build",
     "lint": "eslint ./{src,__tests__}/**/*.ts",
     "lint:fix": "eslint --fix ./{src,__tests__}/**/*.ts",
     "test": "jest --coverage --verbose --detectOpenHandles",
-    "build": "ncc build ./src/index.ts -o lib --minify",
+    "build": "npm run tsc && ncc build ./src/index.ts -o dist --minify",
     "tsc": "tsc",
     "format": "prettier --write '**/*.ts'",
     "format:check": "prettier --check '**/*.ts'"

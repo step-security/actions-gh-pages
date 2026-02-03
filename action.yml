@@ -3,7 +3,7 @@ description: 'GitHub Actions for GitHub Pages 🚀 Deploy static files and publi
 author: 'step-security'
 runs:
   using: 'node20'
-  main: 'lib/index.js'
+  main: 'dist/index.js'
 branding:
   icon: 'upload-cloud'
   color: 'blue'

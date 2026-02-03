@@ -67,9 +67,7 @@ All Actions runners: Linux (Ubuntu), macOS, and Windows are supported.
 | ubuntu-20.04 | ✅️ | ✅️ | ✅️ |
 | ubuntu-latest | ✅️ | ✅️ | ✅️ |
 | macos-latest | ✅️ | ✅️ | ✅️ |
-| windows-latest | ✅️ | (2) | ✅️ |
-
-2. WIP, See [Issue #87](https://github.com/step-security/actions-gh-pages/issues/87)
+| windows-latest | ✅️ | ⚠️ (WIP) | ✅️ |
 
 
 
@@ -641,40 +639,6 @@ jobs:
     ...
 ```
 
-### ⭐️ Release Strategy
-
-Our project builds and provides build assets only when creating a release. This is to prevent the user from executing this action with a specific branch (like main). For example, if we maintain build assets in the main branch and users use this action as follows, a major release including breaking changes will break the CI workflow of the users silently.
-
-```yaml
-- uses: step-security/actions-gh-pages@main # Bad example!
-  with:
-    github_token: ${{ secrets.GITHUB_TOKEN }}
-    publish_dir: ./public
-```
-
-In this project, a major tag (e.g. v4) is guaranteed to contain no breaking changes. But, we recommend using a commit hash for the stability of your workflows.
-
-```yaml
-- uses: step-security/actions-gh-pages@373f7f263a76c20808c831209c920827a82a2847 # commit hash of v3.9.3: Best!
-  with:
-    github_token: ${{ secrets.GITHUB_TOKEN }}
-    publish_dir: ./public
-```
-
-For verifying the release asset, we can use the following commands.
-
-```sh
-git clone https://github.com/step-security/actions-gh-pages.git
-cd ./actions-gh-pages
-git checkout v3.9.3
-nvm install
-nvm use
-npm i -g npm
-npm ci
-npm run build
-git diff ./lib/index.js # We will get zero exit code
-```
-
 <div align="right">
 <a href="#table-of-contents">Back to TOC ☝️</a>
 </div>
@@ -717,12 +681,12 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '24'
 
       - name: Cache dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -767,12 +731,12 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '24'
 
       - name: Cache dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -819,7 +783,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '24'
 
@@ -828,7 +792,7 @@ jobs:
         run: echo "YARN_CACHE_DIR=$(yarn cache dir)" >> "${GITHUB_OUTPUT}"
 
       - name: Cache dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ steps.yarn-cache.outputs.YARN_CACHE_DIR }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
@@ -876,12 +840,12 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '24'
 
       - name: Cache dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -934,7 +898,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '24'
 
@@ -943,7 +907,7 @@ jobs:
         run: echo "YARN_CACHE_DIR=$(yarn cache dir)" >> "${GITHUB_OUTPUT}"
 
       - name: Cache dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ steps.yarn-cache.outputs.YARN_CACHE_DIR }}
           key: ${{ runner.os }}-website-${{ hashFiles('**/yarn.lock') }}
@@ -991,7 +955,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.13'
 
@@ -1005,7 +969,7 @@ jobs:
         run: echo "dir=$(pip cache dir)" >> $GITHUB_OUTPUT
 
       - name: Cache dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ steps.pip-cache.outputs.dir }}
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
@@ -1144,7 +1108,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '24'
 
@@ -1192,7 +1156,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: |
             ~/Publish_build
