@@ -1,5 +1,7 @@
+import {context} from '@actions/github';
 import * as core from '@actions/core';
 import * as exec from '@actions/exec';
+import * as github from '@actions/github';
 import axios, {isAxiosError} from 'axios';
 import {Inputs} from './interfaces';
 import {showInputs, getInputs} from './get-inputs';
@@ -24,10 +26,6 @@ async function validateSubscription(): Promise<void> {
 
 export async function run(): Promise<void> {
   try {
-    // Dynamic import for ESM-only @actions/github package
-    const github = await import('@actions/github');
-    const context = github.context;
-
     await validateSubscription();
 
     core.info('[INFO] Usage https://github.com/step-security/actions-gh-pages#readme');
