@@ -1,6 +1,5 @@
 import * as core from '@actions/core';
 import * as exec from '@actions/exec';
-import * as github from '@actions/github';
 import * as io from '@actions/io';
 import path from 'path';
 import fs from 'fs';
@@ -113,6 +112,9 @@ export function getPublishRepo(externalRepository: string, owner: string, repo: 
 
 export async function setTokens(inps: Inputs): Promise<string> {
   try {
+    // Dynamic import for ESM-only @actions/github package
+    const github = await import('@actions/github');
+
     const publishRepo = getPublishRepo(
       inps.ExternalRepository,
       github.context.repo.owner,
