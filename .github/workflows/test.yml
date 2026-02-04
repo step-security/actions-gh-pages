@@ -1,0 +1,50 @@
+name: 'Test'
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '*.md'
+  pull_request:
+    paths-ignore:
+      - '*.md'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Dump version
+        run: |
+          node -v
+          npm --version
+          git --version
+
+      - run: npm ci --ignore-scripts
+
+      - name: npm audit
+        run: |
+          npm audit > ./audit.log || true
+          if ! [ "$(cat ./audit.log | wc -l)" = 1 ]; then
+            echo "::warning::$(cat ./audit.log)"
+          fi
+          rm ./audit.log
+
+      - name: Run prettier
+        run: npm run format:check
+
+      - name: Run eslint
+        run: npm run lint
+
+      - run: npm test

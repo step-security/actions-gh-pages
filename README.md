@@ -120,7 +120,6 @@ Note that the `GITHUB_TOKEN` that is created by the runner might not inherently 
   - [⭐️ Elm](#%EF%B8%8F-elm)
   - [⭐️ Swift Publish](#%EF%B8%8F-swift-publish)
 - [License](#license)
-- [Maintainer](#maintainer)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
