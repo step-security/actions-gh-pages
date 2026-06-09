@@ -6,7 +6,7 @@ import fs from 'fs';
 import {URL} from 'url';
 import {Inputs, CmdResult} from './interfaces';
 import {createDir} from './utils';
-import {cp, rm} from 'shelljs';
+import {rm} from 'shelljs';
 
 export async function createBranchForce(branch: string): Promise<void> {
   await exec.exec('git', ['init']);
@@ -34,8 +34,21 @@ export async function deleteExcludedAssets(destDir: string, excludeAssets: strin
   for await (const file of globber.globGenerator()) {
     core.info(`[INFO] delete ${file}`);
   }
-  rm('-rf', files);
+  if (files.length > 0) {
+    rm('-rf', files);
+  }
   return;
+}
+
+async function copyDirContents(publishDir: string, destDir: string): Promise<void> {
+  const entries = await fs.promises.readdir(publishDir);
+  for (const entry of entries) {
+    await fs.promises.cp(path.join(publishDir, entry), path.join(destDir, entry), {
+      dereference: true,
+      force: true,
+      recursive: true
+    });
+  }
 }
 
 export async function copyAssets(
@@ -57,7 +70,7 @@ export async function copyAssets(
   }
 
   core.info(`[INFO] copy ${publishDir} to ${destDir}`);
-  cp('-RfL', [`${publishDir}/*`, `${publishDir}/.*`], destDir);
+  await copyDirContents(publishDir, destDir);
 
   await deleteExcludedAssets(destDir, excludeAssets);
 
@@ -138,7 +151,7 @@ export async function setRepo(inps: Inputs, remoteURL: string, workDir: string):
       await copyAssets(publishDir, destDir, inps.ExcludeAssets);
       return;
     } else {
-      throw new Error('unexpected error');
+      throw new Error('unexpected error', {cause: error});
     }
   }
 }
@@ -210,7 +223,7 @@ export async function commit(allowEmptyCommit: boolean, msg: string): Promise<vo
       core.info('[INFO] skip commit');
       core.debug(`[INFO] skip commit ${error.message}`);
     } else {
-      throw new Error('unexpected error');
+      throw new Error('unexpected error', {cause: error});
     }
   }
 }
@@ -228,12 +241,7 @@ export async function pushTag(tagName: string, tagMessage: string): Promise<void
     return;
   }
 
-  let msg = '';
-  if (tagMessage) {
-    msg = tagMessage;
-  } else {
-    msg = `Deployment ${tagName}`;
-  }
+  const msg = tagMessage || `Deployment ${tagName}`;
 
   await exec.exec('git', ['tag', '-a', `${tagName}`, '-m', `${msg}`]);
   await exec.exec('git', ['push', 'origin', `${tagName}`]);
