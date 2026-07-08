@@ -133,9 +133,9 @@ Add your workflow file `.github/workflows/gh-pages.yml` and push it to your remo
 
 Here is an example workflow for Hugo.
 
-- [peaceiris/actions-hugo: GitHub Actions for Hugo](https://github.com/peaceiris/actions-hugo)
+- [step-security/actions-hugo: GitHub Actions for Hugo](https://github.com/step-security/actions-hugo)
 
-[![peaceiris/actions-hugo - GitHub](https://gh-card.dev/repos/peaceiris/actions-hugo.svg?fullname)](https://github.com/peaceiris/actions-hugo)
+[![step-security/actions-hugo - GitHub](https://gh-card.dev/repos/step-security/actions-hugo.svg?fullname)](https://github.com/step-security/actions-hugo)
 
 ```yaml
 name: GitHub Pages
@@ -160,7 +160,7 @@ jobs:
           fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
 
       - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2
+        uses: step-security/actions-hugo@v3
         with:
           hugo-version: '0.110.0'
 
